@@ -4,12 +4,13 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '@prisma/client';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthRegisterDto } from './dto/auth-register.dto';
 import { UserService } from 'src/user/user.service';
 import * as bcrypt from 'bcrypt';
 import { MailerService } from '@nestjs-modules/mailer/dist';
+import { UserEntity } from 'src/user/entities/user.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 @Injectable()
 export class AuthService {
   private readonly audience = 'users';
@@ -17,12 +18,13 @@ export class AuthService {
 
   constructor(
     private readonly jwtService: JwtService,
-    private readonly prismaService: PrismaService,
     private readonly userService: UserService,
     private readonly mailerService: MailerService,
+    @InjectRepository(UserEntity)
+    private readonly usersRepository: Repository<UserEntity>,
   ) {}
 
-  createToken(user: User) {
+  createToken(user: UserEntity) {
     return {
       acessToken: this.jwtService.sign(
         {
@@ -54,7 +56,7 @@ export class AuthService {
   }
 
   async login(email: string, password: string) {
-    const user = await this.prismaService.user.findFirst({
+    const user = await this.usersRepository.findOne({
       where: {
         email: email,
       },
@@ -63,18 +65,15 @@ export class AuthService {
     if (!user) {
       throw new UnauthorizedException('Email e/ou senha incorreto');
     }
-
     const isMatchPassword = await bcrypt.compare(password, user.password);
-
     if (!isMatchPassword) {
       throw new UnauthorizedException('Email e/ou senha incorreto');
     }
-
     return this.createToken(user);
   }
 
   async forget(email: string) {
-    const user = await this.prismaService.user.findFirst({
+    const user = await this.usersRepository.findOne({
       where: {
         email: email,
       },
@@ -107,7 +106,7 @@ export class AuthService {
         </head>
         <body>
         p ${user.name}você solicitou a recuperação de senha, por favor use o token a seguir: <a href='${token}'>${token}<a>
-      
+
         </body>
       </html>`,
     });
@@ -125,14 +124,11 @@ export class AuthService {
       const salt = await bcrypt.genSalt();
       const passwordHash = await bcrypt.hash(password, salt);
 
-      const user = await this.prismaService.user.update({
-        where: {
-          id: id,
-        },
-        data: {
-          password: passwordHash,
-        },
+      await this.usersRepository.update(id, {
+        password: passwordHash,
       });
+
+      const user = await this.userService.show(id);
 
       return this.createToken(user);
     } catch (e) {

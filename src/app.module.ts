@@ -7,6 +7,8 @@ import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { ConfigModule } from '@nestjs/config';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserEntity } from './user/entities/user.entity';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -31,6 +33,18 @@ import { MailerModule } from '@nestjs-modules/mailer';
         from: '"nest-modules" <modules@nestjs.com>',
       },
     }),
+
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      port: 5432,
+      host: 'localhost',
+      username: 'postgres',
+      password: 'Triborest33',
+      database: 'curso-hcode',
+      entities: [UserEntity],
+      synchronize: process.env.ENV === 'development',
+    }),
+    TypeOrmModule.forFeature([UserEntity]),
   ],
   providers: [
     AppService,
