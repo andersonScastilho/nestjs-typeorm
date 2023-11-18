@@ -36,11 +36,11 @@ import { UserEntity } from './user/entities/user.entity';
 
     TypeOrmModule.forRoot({
       type: 'postgres',
-      port: 5432,
-      host: 'localhost',
-      username: 'postgres',
-      password: 'Triborest33',
-      database: 'curso-hcode',
+      port: +process.env.DB_PORT,
+      host: process.env.DB_HOST,
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_DATABASE,
       entities: [UserEntity],
       synchronize: process.env.ENV === 'development',
     }),
