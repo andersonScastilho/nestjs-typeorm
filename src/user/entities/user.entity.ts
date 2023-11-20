@@ -12,7 +12,7 @@ export class UserEntity {
   @PrimaryGeneratedColumn({
     unsigned: true,
   })
-  id: number;
+  id?: number;
 
   @Column({
     length: 63,
@@ -40,11 +40,11 @@ export class UserEntity {
     type: 'date',
     nullable: true,
   })
-  birth_at: Date;
+  birth_at?: Date;
 
   @CreateDateColumn({ type: 'timestamp' })
-  created_at: Date;
+  created_at?: Date;
 
   @UpdateDateColumn({ type: 'timestamp' })
-  updated_at: Date;
+  updated_at?: Date;
 }
