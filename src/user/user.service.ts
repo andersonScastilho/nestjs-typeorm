@@ -95,20 +95,24 @@ export class UserService {
     if (password) {
       const salt = await bcrypt.genSalt();
 
-      data.password = await bcrypt.hash(data.password, salt);
+      data.password = await bcrypt.hash(password, salt);
     }
 
     if (role) {
       data.role = role;
     }
 
-    return this.usersRepository.update(id, data);
+    await this.usersRepository.update(id, data);
+
+    return this.show(id);
   }
 
   async delete(id: number) {
     await this.exists(id);
 
-    return this.usersRepository.delete(id);
+    await this.usersRepository.delete(id);
+
+    return true;
   }
 
   async exists(id: number) {
