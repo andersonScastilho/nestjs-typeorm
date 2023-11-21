@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserController } from './user.controller';
 import { userServiceMock } from '../testing/auth/user-service.mock';
 import { AuthGuard } from '../guards/auth.guard';
-import { guardMock } from '../testing/controllers/guard.mock';
+import { guardMock } from '../testing/guard/guard.mock';
 import { RoleGuard } from '../guards/role.guard';
 import { UserService } from './user.service';
 import { createUserDtoMock } from '../testing/user/create-user-dto.mock';

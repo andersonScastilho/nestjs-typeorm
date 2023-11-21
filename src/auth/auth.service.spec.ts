@@ -8,7 +8,7 @@ import { userEntityList } from '../testing/user/user-entity-list.mock';
 import { acessTokenMock } from '../testing/auth/acessToken.mock';
 import { jwtPayloadMock } from '../testing/auth/jwt-payload.mock';
 import { resetTokenMock } from '../testing/auth/reset-token.mock';
-import { authRegisterDto } from '../testing/auth/auth-register-dto.mock';
+import { authRegisterDtoMock } from '../testing/auth/auth-register-dto.mock';
 
 describe('AuthService', () => {
   let authService: AuthService;
@@ -61,7 +61,9 @@ describe('AuthService', () => {
     test('forget mehtod', async () => {
       const result = await authService.forget('jonhdoe@gmail.com');
 
-      expect(result).toEqual(true);
+      expect(result).toEqual({
+        success: true,
+      });
     });
 
     test('reset mehtod', async () => {
@@ -71,7 +73,7 @@ describe('AuthService', () => {
     });
 
     test('register mehtod', async () => {
-      const result = await authService.register(authRegisterDto);
+      const result = await authService.register(authRegisterDtoMock);
 
       expect(result).toEqual({ acessToken: acessTokenMock });
     });
