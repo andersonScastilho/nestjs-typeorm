@@ -5,10 +5,10 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { AuthRegisterDto } from './dto/auth-register.dto';
-import { UserService } from 'src/user/user.service';
+import { UserService } from '../user/user.service';
 import * as bcrypt from 'bcrypt';
 import { MailerService } from '@nestjs-modules/mailer/dist';
-import { UserEntity } from 'src/user/entities/user.entity';
+import { UserEntity } from '../user/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 @Injectable()
@@ -20,8 +20,9 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly userService: UserService,
     private readonly mailerService: MailerService,
+
     @InjectRepository(UserEntity)
-    private readonly usersRepository: Repository<UserEntity>,
+    private usersRepository: Repository<UserEntity>,
   ) {}
 
   createToken(user: UserEntity) {
@@ -56,27 +57,24 @@ export class AuthService {
   }
 
   async login(email: string, password: string) {
-    const user = await this.usersRepository.findOne({
-      where: {
-        email: email,
-      },
+    const user = await this.usersRepository.findOneBy({
+      email: email,
     });
 
     if (!user) {
       throw new UnauthorizedException('Email e/ou senha incorreto');
     }
-    const isMatchPassword = await bcrypt.compare(password, user.password);
-    if (!isMatchPassword) {
+
+    if (!(await bcrypt.compare(password, user.password))) {
       throw new UnauthorizedException('Email e/ou senha incorreto');
     }
+
     return this.createToken(user);
   }
 
   async forget(email: string) {
-    const user = await this.usersRepository.findOne({
-      where: {
-        email: email,
-      },
+    const user = await this.usersRepository.findOneBy({
+      email: email,
     });
 
     if (!user) {
@@ -137,6 +135,8 @@ export class AuthService {
   }
 
   async register(data: AuthRegisterDto) {
+    delete data.role;
+
     const user = await this.userService.create(data);
 
     return this.createToken(user);

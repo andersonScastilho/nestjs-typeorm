@@ -10,21 +10,22 @@ import {
   ParseFilePipe,
   FileTypeValidator,
   MaxFileSizeValidator,
+  Req,
 } from '@nestjs/common';
 import { AuthLoginDto } from './dto/auth-login.dto';
 import { AuthRegisterDto } from './dto/auth-register.dto';
 import { AuthForgetDto } from './dto/auth-forget.dto';
 import { AuthResetDto } from './dto/auth-reset.dto';
 import { AuthService } from './auth.service';
-import { AuthGuard } from 'src/guards/auth.guard';
-import { User } from 'src/decorators/user.decorator';
+import { AuthGuard } from '../guards/auth.guard';
+import { User } from '../decorators/user.decorator';
 import {
   FileInterceptor,
   FilesInterceptor,
   FileFieldsInterceptor,
 } from '@nestjs/platform-express';
 import { join } from 'path';
-import { FileService } from 'src/file/file.service';
+import { FileService } from '../file/file.service';
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -51,6 +52,11 @@ export class AuthController {
     return await this.authService.reset(password, token);
   }
 
+  @UseGuards(AuthGuard)
+  @Post('me')
+  async me(@User() user, @Req() { tokenPayload }) {
+    return { user, tokenPayload };
+  }
   @UseGuards(AuthGuard)
   @UseInterceptors(FileInterceptor('file'))
   @Post('photo')

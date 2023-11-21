@@ -44,10 +44,8 @@ export class UserService {
 
   async show(id: number) {
     await this.exists(id);
-    return this.usersRepository.findOne({
-      where: {
-        id: id,
-      },
+    return this.usersRepository.findOneBy({
+      id: id,
     });
   }
 

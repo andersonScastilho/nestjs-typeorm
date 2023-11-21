@@ -1,5 +1,5 @@
-import { Role } from '../enums/role.enum';
-import { UpdadePatchUserDto } from '../user/dtos/update-patch-user.dto';
+import { Role } from '../../enums/role.enum';
+import { UpdadePatchUserDto } from '../../user/dtos/update-patch-user.dto';
 
 export const updatePatchUserDtoMock: UpdadePatchUserDto = {
   birth_at: '2000-01-01',

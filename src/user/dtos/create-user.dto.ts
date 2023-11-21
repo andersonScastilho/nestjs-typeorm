@@ -6,7 +6,7 @@ import {
   IsDateString,
   IsEnum,
 } from 'class-validator';
-import { Role } from 'src/enums/role.enum';
+import { Role } from '../../enums/role.enum';
 
 export class CreateUserDto {
   @IsString()
@@ -26,9 +26,9 @@ export class CreateUserDto {
 
   @IsOptional()
   @IsDateString()
-  birth_at: string;
+  birth_at?: string;
 
   @IsOptional()
   @IsEnum(Role)
-  role: number;
+  role?: number;
 }

@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from './user.service';
-import { UserRepositoryMock } from '../testing/user-repository.mock';
-import { userEntityList } from '../testing/user-entity-list.mock';
-import { createUserDtoMock } from '../testing/create-user-dto.mock';
+import { userRepositoryMock } from '../testing/user/user-repository.mock';
+import { userEntityList } from '../testing/user/user-entity-list.mock';
+import { createUserDtoMock } from '../testing/user/create-user-dto.mock';
 import { Repository } from 'typeorm';
 import { UserEntity } from './entities/user.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { updatePutUserDtoMock } from '../testing/update-put-user-dto.mock';
-import { updatePatchUserDtoMock } from '../testing/update-patch-user-dto.mock';
+import { updatePutUserDtoMock } from '../testing/user/update-put-user-dto.mock';
+import { updatePatchUserDtoMock } from '../testing/user/update-patch-user-dto.mock';
 
 describe('UserService', () => {
   let userService: UserService;
@@ -15,7 +15,7 @@ describe('UserService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [UserService, UserRepositoryMock],
+      providers: [UserService, userRepositoryMock],
     }).compile();
 
     userService = module.get<UserService>(UserService);
