@@ -1,7 +1,10 @@
 import * as dotenv from 'dotenv';
 import { DataSource } from 'typeorm';
 
-dotenv.config();
+dotenv.config({
+  path: process.env.ENV === 'test' ? '.env.test' : '.env',
+});
+
 const dataSource = new DataSource({
   type: 'postgres',
   port: +process.env.DB_PORT,
